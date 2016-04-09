@@ -95,117 +95,13 @@ class DecisionTree:
             prob_neg_log = prob_neg
         return -1*(prob_pos*log(prob_pos_log) + prob_neg*log(prob_neg_log))
 
-    #Returns next attribute to split on for this branch
-    def recurse(self, attributes, training_data, sub_root, branch_num):
-        labels = training_data[:,0]
-
-        if np.sum(labels==0) == training_data.shape[0]:
-            self.children[sub_root][branch_num] = -10
-            return
-        elif np.sum(labels==1) == training_data.shape[0]:
-            self.children[sub_root][branch_num] = -11
-            return
-        elif len(attributes)==0:
-            neg = labels[labels == 0].size
-            pos = labels[labels == 1].size
-
-            if neg>pos:
-                self.children[sub_root][branch_num] = -10
-            else:
-                self.children[sub_root][branch_num] = -11
-            return
-
-        most_informative_val = 20000
-        most_informative_feature = -1
-
-        for i in attributes:
-            vals_attribute = self.attributeVals[i]
-            neg_sum = 0
-            for j in vals_attribute:
-                temp_entropy = 0
-                if training_data[training_data[:,i] == j].size:
-                    neg = 0
-                    pos = 0
-                    training_data_split = training_data[training_data[:,i] == j]
-                    if len(training_data_split[:,0]==0):
-                        neg = training_data_split[training_data_split[:,0]==0].shape[0]
-                    if len(training_data_split[:,0]==1):
-                        pos = training_data_split[training_data_split[:,0]==1].shape[0]
-                    temp_entropy = float(training_data_split.shape[0])*self.get_entropy(pos, neg)/training_data.shape[0]
-                neg_sum += temp_entropy
-
-
-            #print 'NEG_SUM IS ' + str(neg_sum)
-            if neg_sum < most_informative_val:
-                most_informative_val = neg_sum
-                most_informative_feature = i
-
-        self.node.append(most_informative_feature)
-        self.children.append([0]*len(self.attributeVals[most_informative_feature]))
-        node_num = len(self.node) - 1
-        self.children[sub_root][branch_num] = node_num
-        self.branch.append(self.attributeVals[most_informative_feature])
-
-
-        attributes_reduced = {k for k in attributes}
-        attributes_reduced.remove(most_informative_feature)
-
-        for i in self.branch[node_num]:
-            training_data_reduced = training_data[training_data[:,most_informative_feature] == i]
-            self.recurse(attributes_reduced, training_data_reduced, node_num, self.branch[node_num].index(i))
-
-        return
-
-    def grow_tree(self):
-
-        most_informative_val = 20000
-        most_informative_feature = -1
-
-        for i in self.attributes:
-            vals_attribute = self.attributeVals[i]
-            neg_sum = 0
-            #print 'STARTING ATTRIBUTE ' + str(i) + '!'
-            for j in vals_attribute:
-                #print 'Value of x_a is ' + str(j)
-                temp_entropy = 0
-                if self.train_data[self.train_data[:,i] == j].size:
-                    training_data_split = self.train_data[self.train_data[:,i] == j]
-                    neg = 0
-                    pos = 0
-
-                    #print (training_data_split[:,0])==0, len((training_data_split[:,0])==0)
-                    if len((training_data_split[:,0])==0):
-                        neg = (training_data_split[(training_data_split[:,0])==0]).shape[0]
-                    if len(training_data_split[:,0]==1):
-                        pos = training_data_split[training_data_split[:,0]==1].shape[0]
-
-                    #print training_data_split.shape
-                    temp_entropy= float(training_data_split.shape[0])*self.get_entropy(pos, neg)/self.train_data.shape[0]
-                neg_sum += temp_entropy
-                #print neg_sum
-
-            #print 'NEG_SUM IS ' + str(neg_sum)
-            if neg_sum < most_informative_val:
-                most_informative_val = neg_sum
-                most_informative_feature = i
-
-        self.node.append(most_informative_feature)
-        node_num = 0
-        self.children.append([-1]*len(self.attributeVals[most_informative_feature]))
-        self.branch.append(self.attributeVals[most_informative_feature])
-
-        attribute_reduced = {k for k in self.attributes}
-        attribute_reduced.remove(most_informative_feature)
-
-        #print attribute_reduced
-        #print self.attributes
-
-        #print 'MOST INFORMATIVE FEATURE: ' + str(most_informative_feature)
-
-        for i in self.branch[0]:
-            training_data_reduced = self.train_data[self.train_data[:,most_informative_feature] == i]
-            self.recurse(attribute_reduced, training_data_reduced, 0, self.branch[0].index(i))
-
+    def classBalance(self):
+        print 'TRAINING BALANCE'
+        print np.sum([self.train_data[:,0] == 0]), np.sum([self.train_data[:,0] == 1])
+        print 'VALIDATION BALANCE'
+        print np.sum([self.valid_data[:,0] == 0]), np.sum([self.valid_data[:,0] == 1])
+        print 'TESTING BALANCE'
+        print np.sum([self.test_data[:,0] == 0]), np.sum([self.test_data[:,0] == 1])
         return
 
     def find_most_informative_feature(self, data, attributes):
@@ -322,36 +218,27 @@ class DecisionTree:
 
         return correct_train, correct_valid, correct_test
 
-
-    def grow_tree_with_prediction(self):
+    def grow_tree_with_prediction(self, mode = 0):
 
         counter = 0
 
         self.node[counter] = 0
         self.children[counter] = 0
-        #self.parent.append(-1)
         self.parent[counter] = -1
-        #self.branch_data.append(self.valid_data)
 
         stackOfNodes = Queue.Queue()
         relevantDataForNodes = Queue.Queue()
         relevantAttributes = Queue.Queue()
-        #validationData = Queue.Queue()
         stackOfNodes._put(0)
         relevantDataForNodes._put(self.train_data)
         relevantAttributes._put(self.attributes)
-        #validationData._put(self.valid_data)
         numOfNodes = 0
-
-        #accuracyGraph = []
 
         main_neg = np.sum(self.train_data[:, 0] == 0)
         main_pos = np.sum(self.train_data[:, 0] == 1)
         if main_neg > main_pos:
-            #self.majorityLabel.append(-10)
             self.majorityLabel[counter] = -10
         else:
-            #self.majorityLabel.append(-11)
             self.majorityLabel[counter] = -11
 
         while not stackOfNodes.empty():
@@ -359,7 +246,6 @@ class DecisionTree:
             currentNode = stackOfNodes._get()
             currentData = relevantDataForNodes._get()
             currentAttributes = relevantAttributes._get()
-            #currentValidData = validationData._get()
 
 
             if currentData.size==0:
@@ -394,25 +280,12 @@ class DecisionTree:
 
                 self.children[currentNode] = range(len(self.node), len(self.node) + len(self.attributeVals[attribute_index]), 1)
 
-                #self.children.extend([0]*len(self.attributeVals[attribute_index]))
-                '''for i in xrange(len(self.attributeVals[attribute_index])):
-                    counter += 1
-                    self.children[counter] = 0
-                    self.node[counter] = 0
-                    self.majorityLabel[counter] = 0
-                    self.parent[counter] = currentNode'''
-                #self.node.extend([0]*len(self.attributeVals[attribute_index]))
-                #self.majorityLabel.extend([0]*len(self.attributeVals[attribute_index]))
-                #self.branch_data.extend([0]*len(self.attributeVals[attribute_index]))
                 relevantAttributesForChild = {k for k in currentAttributes}
                 relevantAttributesForChild.remove(attribute_index)
-
-                #for i in xrange(len(self.attributeVals[attribute_index])):
 
                 for i in xrange(len(self.children[currentNode])):
                     nodeOfChild = self.children[currentNode][i]
                     dataOfChild = currentData[currentData[:, attribute_index] == self.attributeVals[attribute_index][i]]
-
 
                     if dataOfChild.size == 0:
                         root_neg = np.sum([currentData[:, 0] == 0])
@@ -423,7 +296,6 @@ class DecisionTree:
                         else:
                             self.node[nodeOfChild] = -11
                             self.majorityLabel[nodeOfChild] = -11
-                        #continue
                     else:
                         neg = dataOfChild[:, 0][dataOfChild[:, 0] == 0].size
                         pos = dataOfChild[:, 0][dataOfChild[:, 0] == 1].size
@@ -444,32 +316,23 @@ class DecisionTree:
 
         self.tree_accuracy = np.array(self.tree_accuracy)
 
-        print self.tree_accuracy
-
         valid_line = self.tree_accuracy[:, 2]
         x_index = self.tree_accuracy[:, 0]
         train_line = self.tree_accuracy[:, 1]
 
         test_line = self.tree_accuracy[:, 3]
 
-        plt.plot(x_index, train_line, x_index, test_line, x_index, valid_line)
-        plt.show()
+        if mode == 1:
+
+            plt.plot(x_index, 100*train_line, x_index, 100*test_line, x_index, 100*valid_line)
+            plt.xlabel('Number of nodes in the Decision Tree.')
+            plt.ylabel('Accuracy (Percentage)')
+            plt.show()
 
         self.validationAccuracy = valid_line[-1]
 
-        print np.sum(np.array(self.node.values()) > 0)
+        #print np.sum(np.array(self.node.values()) > 0)
 
-
-        return
-
-
-    def classBalance(self):
-        print 'TRAINING BALANCE'
-        print np.sum([self.train_data[:,0] == 0]), np.sum([self.train_data[:,0] == 1])
-        print 'VALIDATION BALANCE'
-        print np.sum([self.valid_data[:,0] == 0]), np.sum([self.valid_data[:,0] == 1])
-        print 'TESTING BALANCE'
-        print np.sum([self.test_data[:,0] == 0]), np.sum([self.test_data[:,0] == 1])
         return
 
 
@@ -481,25 +344,11 @@ class DecisionTree:
         for c in relevantChildren:
             childrenToBePruned._put(c)
 
-        print 'PRUNE SUBTREE', index
-
-        #print self.node.keys()
-
         while not childrenToBePruned.empty():
             nextNode = childrenToBePruned._get()
-
-            print nextNode
-            #print self.parent
-
-            print self.node
-
-            #self.parent.pop(nextNode)
             self.majorityLabel.pop(nextNode)
-            #self.branch.pop(nextNode)
-
 
             if self.node[nextNode] < -1:
-                #self.children.pop(nextNode)
                 self.node.pop(nextNode)
 
             else:
@@ -511,10 +360,9 @@ class DecisionTree:
         return
 
 
-    def prune_tree(self):
+    def prune_tree(self, mode = 0):
 
         benchmark = self.validationAccuracy
-
         accuracyGraph = []
         accuracyGraph.append(self.tree_accuracy[-1].tolist())
 
@@ -541,10 +389,7 @@ class DecisionTree:
                 trainAcc, validAcc, testAcc = self.predict_label()
 
                 accuracyGraph.append([len(self.node.keys()), trainAcc, validAcc, testAcc])
-
                 benchmark = validAcc
-
-                print 'BENCHMARK', benchmark
 
         accuracyGraph = np.array(accuracyGraph)
 
@@ -553,23 +398,27 @@ class DecisionTree:
         valid_line = accuracyGraph[:, 2]
         test_line = accuracyGraph[:, 3]
 
-        print accuracyGraph
+        #print accuracyGraph
 
-        print np.sum(np.array(self.node.values()) > 0)
+        #print np.sum(np.array(self.node.values()) > 0)
 
         x_index_whole = self.tree_accuracy[:, 0]
         train_line_whole = self.tree_accuracy[:, 1]
         valid_line_whole = self.tree_accuracy[:, 2]
         test_line_whole= self.tree_accuracy[:, 3]
 
-        plt.plot(x_index, 100*train_line, 'r-', x_index, 100*test_line, 'b-', x_index, 100*valid_line, 'g-', x_index_whole, 100*train_line_whole, 'r', x_index_whole, 100*test_line_whole, 'b', x_index_whole, 100*valid_line_whole, 'g')
-        plt.xlabel('Number of nodes in the Decision Tree.')
-        plt.ylabel('Accuracy (Percentage)')
-        plt.show()
+        if mode == 1:
+
+            plt.plot(x_index, 100*train_line, 'r-', x_index, 100*test_line, 'b-', x_index, 100*valid_line, 'g-', x_index_whole, 100*train_line_whole, 'r', x_index_whole, 100*test_line_whole, 'b', x_index_whole, 100*valid_line_whole, 'g')
+            plt.xlabel('Number of nodes in the Decision Tree.')
+            plt.ylabel('Accuracy (Percentage)')
+            plt.show()
+
+        return
 
 
 
 
 DT = DecisionTree()
-DT.grow_tree_with_prediction()
-DT.prune_tree()
+DT.grow_tree_with_prediction(mode=1)
+DT.prune_tree(mode=1)
