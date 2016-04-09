@@ -1,0 +1,27 @@
+This is a binary classification problem. Your task is to predict which persons
+were likely to survive the titanic incident, i.e., predict the field "Survival". 
+Original dataset had some missing values which have been filled in as 0.
+
+Description of fields:
+
+===================================================================
+Target: Survival
+Discrete Attributes: {pclass,sex,embarked,cabin_a}
+Numerical Attributes: {age,sibsp,parch,ticket,fare,cabin_b}
+
+NOTE: The attribute 'name' as been removed from the dataset provided to you.
+===================================================================
+survival        Survival
+                (0 = No; 1 = Yes)
+pclass          Passenger Class
+                (1 = 1st; 2 = 2nd; 3 = 3rd)
+sex             Sex
+age             Age
+sibsp           Number of Siblings/Spouses Aboard
+parch           Number of Parents/Children Aboard
+ticket          Ticket Number
+fare            Passenger Fare
+embarked        Port of Embarkation
+                (C = Cherbourg; Q = Queenstown; S = Southampton)
+cabin_a         Cabin row
+cabin_b		Cabin number
