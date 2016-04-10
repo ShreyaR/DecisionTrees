@@ -1,0 +1,202 @@
+Max_depth = 5:
+training accuracy:  0.89156626506
+validation accuracy:  0.784
+test accuracy:  0.798507462687
+
+Min_Samples_Leaf = 5
+training accuracy:  0.90562248996
+validation accuracy:  0.792
+test accuracy:  0.794776119403
+
+Min_Samples_Leaf = 7
+training accuracy:  0.887550200803
+validation accuracy:  0.768
+test accuracy:  0.779850746269
+
+Min_Samples_Leaf = 7
+training accuracy:  0.935742971888
+validation accuracy:  0.784
+test accuracy:  0.794776119403
+
+Min_Samples_Leaf = 4
+training accuracy:  0.911646586345
+validation accuracy:  0.8
+test accuracy:  0.772388059701
+
+criterion="entropy", min_samples_split=5
+training accuracy:  0.963855421687
+validation accuracy:  0.768
+test accuracy:  0.746268656716
+
+criterion="entropy", min_samples_split=5
+training accuracy:  0.951807228916
+validation accuracy:  0.792
+test accuracy:  0.746268656716
+
+criterion="gini", min_samples_split=7
+training accuracy:  0.937751004016
+validation accuracy:  0.8
+test accuracy:  0.783582089552
+
+criterion="gini", min_samples_split=5
+training accuracy:  0.957831325301
+validation accuracy:  0.744
+test accuracy:  0.794776119403
+
+criterion="gini", min_samples_split=10
+training accuracy:  0.929718875502
+validation accuracy:  0.768
+test accuracy:  0.794776119403
+
+criterion="gini", min_samples_split=8
+training accuracy:  0.933734939759
+validation accuracy:  0.784
+test accuracy:  0.787313432836
+
+DecisionTreeClassifier(criterion="gini", min_samples_leaf=4 )
+training accuracy:  0.90562248996
+validation accuracy:  0.76
+test accuracy:  0.772388059701
+
+dtree = DecisionTreeClassifier(criterion="gini", min_samples_leaf=3 )
+training accuracy:  0.919678714859
+validation accuracy:  0.792
+test accuracy:  0.791044776119
+
+DecisionTreeClassifier(criterion="gini", min_samples_leaf=2 )
+training accuracy:  0.937751004016
+validation accuracy:  0.736
+test accuracy:  0.809701492537
+
+DecisionTreeClassifier(criterion="gini", max_depth=5)
+training accuracy:  0.907630522088
+validation accuracy:  0.768
+test accuracy:  0.813432835821
+
+DecisionTreeClassifier(criterion="gini", max_depth=6)
+training accuracy:  0.919678714859
+validation accuracy:  0.784
+test accuracy:  0.80223880597
+
+
+DecisionTreeClassifier(criterion="gini", max_depth=7)
+training accuracy:  0.943775100402
+validation accuracy:  0.76
+test accuracy:  0.798507462687
+
+
+DecisionTreeClassifier(criterion="gini", max_depth=8)
+training accuracy:  0.955823293173
+validation accuracy:  0.768
+test accuracy:  0.794776119403
+
+
+DecisionTreeClassifier(criterion="gini", max_depth=9)
+training accuracy:  0.971887550201
+validation accuracy:  0.784
+test accuracy:  0.809701492537
+
+
+DecisionTreeClassifier(criterion="gini", max_depth=10)
+training accuracy:  0.979919678715
+validation accuracy:  0.768
+test accuracy:  0.805970149254
+
+
+DecisionTreeClassifier(criterion="gini", max_depth=11)
+training accuracy:  0.987951807229
+validation accuracy:  0.776
+test accuracy:  0.820895522388
+
+dtree = DecisionTreeClassifier(criterion="entropy", splitter="best", max_depth=8, class_weight={0:0.66, 1:0.34})
+training accuracy:  0.955823293173
+validation accuracy:  0.808
+test accuracy:  0.768656716418
+
+dtree = DecisionTreeClassifier(criterion="entropy", splitter="best", max_depth=5, class_weight={0:0.66, 1:0.34})
+training accuracy:  0.881526104418
+validation accuracy:  0.824
+test accuracy:  0.776119402985
+
+dtree = DecisionTreeClassifier(criterion="entropy", splitter="best", max_depth=5, class_weight={0:0.6, 1:0.4})
+~77%
+
+dtree = DecisionTreeClassifier(criterion="entropy", splitter="best", max_depth=5, class_weight={0:0.66, 1:0.34}, min_samples_split=5)
+training accuracy:  0.881526104418
+validation accuracy:  0.824
+test accuracy:  0.779850746269
+
+
+RandomForests:
+================================================================================================
+NumForests = 10
+training accuracy:  0.981927710843
+validation accuracy:  0.784
+test accuracy:  0.772388059701
+
+NumForests = 5
+training accuracy:  0.971887550201
+validation accuracy:  0.816
+test accuracy:  0.787313432836
+
+n_estimators=5, criterion="entropy", max_depth=5
+training accuracy:  0.875502008032
+validation accuracy:  0.808
+test accuracy:  0.761194029851
+
+n_estimators=5, criterion="entropy", max_depth=4
+training accuracy:  0.823293172691
+validation accuracy:  0.784
+test accuracy:  0.746268656716
+
+Dimensionality Reduction
+================================================================================================
+PCA : Didn't help much
+Feature Selection:
+
+kBest = SelectKBest(chi2, k=4)
+dtree = DecisionTreeClassifier(criterion="entropy", splitter="best", max_depth=5, class_weight={0:0.66, 1:0.34}, min_samples_split=5)
+training accuracy:  0.873493975904
+validation accuracy:  0.824
+test accuracy:  0.787313432836
+
+kBest = SelectKBest(chi2, k=5)
+dtree = DecisionTreeClassifier(criterion="entropy", splitter="best", max_depth=5, class_weight={0:0.66, 1:0.34}, min_samples_split=5)
+training accuracy:  0.873493975904
+validation accuracy:  0.824
+test accuracy:  0.783582089552
+
+kBest = SelectKBest(chi2, k=3)
+dtree = DecisionTreeClassifier(criterion="entropy", splitter="best", max_depth=5, class_weight={0:0.66, 1:0.34}, min_samples_split=5)
+training accuracy:  0.873493975904
+validation accuracy:  0.824
+test accuracy:  0.787313432836
+
+
+EXTRA TREES CLASSIFIER
+================================================================================================
+dtree = ExtraTreesClassifier(n_estimators=10, criterion="entropy", max_features=5, max_depth=10)
+training accuracy:  0.939759036145
+validation accuracy:  0.84
+test accuracy:  0.776119402985
+
+dtree = ExtraTreesClassifier(n_estimators=10, criterion="entropy", max_features=5, max_depth=8)
+training accuracy:  0.903614457831
+validation accuracy:  0.808
+test accuracy:  0.772388059701
+
+dtree = ExtraTreesClassifier(n_estimators=10, criterion="entropy", max_features=5, max_depth=5)
+training accuracy:  0.863453815261
+validation accuracy:  0.808
+test accuracy:  0.757462686567
+
+dtree = ExtraTreesClassifier(n_estimators=100, criterion="entropy", max_features=5, max_depth=5, random_state=42)
+training accuracy:  0.867469879518
+validation accuracy:  0.832
+test accuracy:  0.768656716418
+
+dtree = ExtraTreesClassifier(n_estimators=100, criterion="entropy", max_features=5, max_depth=5, random_state=867, min_samples_split=5)
+training accuracy:  0.86546184739
+validation accuracy:  0.832
+test accuracy:  0.772388059701
+
