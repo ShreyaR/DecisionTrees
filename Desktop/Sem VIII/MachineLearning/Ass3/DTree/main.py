@@ -17,8 +17,6 @@ class DecisionTree:
         test_data = []
         valid_data = []
 
-
-
         with open('train.csv') as f:
             raw_trainData = reader(f)
             count = True
@@ -214,6 +212,9 @@ class DecisionTree:
         predictions_test = []
         predictions_valid = []
 
+        #print self.node
+        #print self.children
+
         for i in self.train_data:
             currentNode = 0
 
@@ -222,14 +223,20 @@ class DecisionTree:
                 attributeValueOfInstance = i[attributeToBeTested]
                 branchToGo = self.attributeVals[attributeToBeTested].index(attributeValueOfInstance)
                 nextNode = self.children[currentNode][branchToGo]
-                if self.node[nextNode]==-10:
+                #if self.node[nextNode]==-10:
+                if nextNode == -10:
                     predictions_train.append(0)
                     break
-                elif self.node[nextNode]==-11:
+                #elif self.node[nextNode]==-11:
+                elif nextNode == -11:
                     predictions_train.append(1)
                     break
                 else:
                     currentNode = nextNode
+
+
+
+
 
 
 
@@ -243,10 +250,12 @@ class DecisionTree:
                 branchToGo = self.attributeVals[attributeToBeTested].index(attributeValueOfInstance)
                 nextNode = self.children[currentNode][branchToGo]
 
-                if self.node[nextNode]==-10:
+                #if self.node[nextNode]==-10:
+                if nextNode == -10:
                     predictions_test.append(0)
                     break
-                elif self.node[nextNode]==-11:
+                #elif self.node[nextNode]==-11:
+                elif nextNode == -11:
                     predictions_test.append(1)
                     break
                 else:
@@ -262,10 +271,12 @@ class DecisionTree:
                 branchToGo = self.attributeVals[attributeToBeTested].index(attributeValueOfInstance)
                 nextNode = self.children[currentNode][branchToGo]
 
-                if self.node[nextNode]==-10:
+                #if self.node[nextNode]==-10:
+                if nextNode == -10:
                     predictions_valid.append(0)
                     break
-                elif self.node[nextNode]==-11:
+                #elif self.node[nextNode]==-11:
+                elif nextNode == -11:
                     predictions_valid.append(1)
                     break
                 else:
@@ -283,6 +294,8 @@ class DecisionTree:
         correct_train = labels_train[labels_train == predictions_train].size/float(labels_train.size)
         correct_valid = labels_valid[labels_valid == predictions_valid].size/float(labels_valid.size)
 
+        print correct_test, correct_train, correct_valid
+        print len(self.node)
         return correct_train, correct_valid, correct_test
 
     def find_most_informative_feature(self, data, attributes):
@@ -473,8 +486,8 @@ class DecisionTree:
 
 
 DT = DecisionTree()
-#DT.grow_tree()
-#DT.predict_label()
-DT.grow_tree_with_prediction()
+DT.grow_tree()
+DT.predict_label()
+#DT.grow_tree_with_prediction()
 #DT.get_entropy(0,1)
 #DT.classBalance()
