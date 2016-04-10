@@ -152,7 +152,7 @@ class DecisionTree:
         else:
             return -1
 
-    def find_most_informative_feature_continuous(self, data, attributes):
+    '''def find_most_informative_feature_continuous(self, data, attributes):
 
         most_informative_val = 20000
         most_informative_feature = -1
@@ -205,6 +205,61 @@ class DecisionTree:
         parent_entropy = self.get_entropy(root_pos, root_neg)
 
         if abs(most_informative_val - parent_entropy) > 0.005:
+            if most_informative_feature in self.numerical_attributes:
+                median_val = np.median(data[:,most_informative_feature])
+            else:
+                median_val = -1
+            return most_informative_feature, median_val
+        else:
+            return -1, -1'''
+
+
+    def find_most_informative_feature_continuous(self, data, attributes):
+
+        most_informative_val = 20000
+        most_informative_feature = -1
+
+        for i in attributes:
+            vals_attribute = self.attributeVals[i]
+            neg_sum = 0
+
+            if i in self.numerical_attributes:
+                median_val = np.median(data[:, i])
+                data_0 = data[data[:, i] < median_val]
+                data_1 = data[data[:, i] >= median_val]
+                neg_0 = np.sum(data_0[:, 0] == 0)
+                pos_0 = np.sum(data_0[:, 0] == 1)
+                neg_1 = np.sum(data_1[:, 0] == 0)
+                pos_1 = np.sum(data_1[:, 0] == 1)
+
+                neg_sum += (((neg_0 + pos_0)*self.get_entropy(pos_0, neg_0) + (neg_1 + pos_1)*self.get_entropy(pos_1, neg_1))/float(data.shape[0]))
+
+            else:
+                for j in vals_attribute:
+                    temp_entropy = 0
+                    if data[data[:,i] == j].size:
+                        training_data_split = data[data[:,i] == j]
+                        neg = 0
+                        pos = 0
+
+                        if len((training_data_split[:,0])==0):
+                            neg = (training_data_split[(training_data_split[:,0])==0]).shape[0]
+                        if len(training_data_split[:,0]==1):
+                            pos = training_data_split[training_data_split[:,0]==1].shape[0]
+
+                        temp_entropy= float(training_data_split.shape[0])*self.get_entropy(pos, neg)/data.shape[0]
+                    neg_sum += temp_entropy
+
+            if neg_sum < most_informative_val:
+                most_informative_val = neg_sum
+                most_informative_feature = i
+
+        root_neg = np.sum(data[:, 0] == 0)
+        root_pos = np.sum(data[:, 0] == 1)
+
+        parent_entropy = self.get_entropy(root_pos, root_neg)
+
+        if (parent_entropy - most_informative_val) > 0:
             if most_informative_feature in self.numerical_attributes:
                 median_val = np.median(data[:,most_informative_feature])
             else:
@@ -290,7 +345,7 @@ class DecisionTree:
 
         return correct_train, correct_valid, correct_test
 
-    def predict_label_continuous(self):
+    '''def predict_label_continuous(self):
 
         predictions_train = []
         predictions_test = []
@@ -389,6 +444,105 @@ class DecisionTree:
         labels_test = self.test_data[:,0]
         labels_train = self.train_data[:,0]
         labels_valid = self.valid_data[:,0]
+
+        correct_test = labels_test[labels_test == predictions_test].size/float(labels_test.size)
+        correct_train = labels_train[labels_train == predictions_train].size/float(labels_train.size)
+        correct_valid = labels_valid[labels_valid == predictions_valid].size/float(labels_valid.size)
+
+        return correct_train, correct_valid, correct_test'''
+
+
+    def predict_label_continuous(self):
+
+        predictions_train = []
+        predictions_test = []
+        predictions_valid = []
+
+        for i in self.train_raw:
+            currentNode = 0
+
+            while(True):
+                attributeToBeTested = self.node[currentNode]
+                attributeValueOfInstance = i[attributeToBeTested]
+                if attributeToBeTested not in self.numerical_attributes:
+                    branchToGo = self.attributeVals[attributeToBeTested].index(attributeValueOfInstance)
+
+                else:
+                    median_val = self.nodeMedianList[currentNode]
+                    if attributeValueOfInstance >= median_val:
+                        branchToGo = 1
+                    else:
+                        branchToGo = 0
+                nextNode = self.children[currentNode][branchToGo]
+                if self.node[nextNode] == -10:
+                    predictions_train.append(0)
+                    break
+                elif self.node[nextNode] == -11:
+                    predictions_train.append(1)
+                    break
+                else:
+                    currentNode = nextNode
+
+
+        for i in self.test_raw:
+            currentNode = 0
+            while(True):
+                attributeToBeTested = self.node[currentNode]
+                attributeValueOfInstance = i[attributeToBeTested]
+
+                if attributeToBeTested not in self.numerical_attributes:
+                    branchToGo = self.attributeVals[attributeToBeTested].index(attributeValueOfInstance)
+
+                else:
+                    median_val = self.nodeMedianList[currentNode]
+                    if attributeValueOfInstance >= median_val:
+                        branchToGo = 1
+                    else:
+                        branchToGo = 0
+                nextNode = self.children[currentNode][branchToGo]
+                if self.node[nextNode]==-10:
+                    predictions_test.append(0)
+                    break
+                elif self.node[nextNode]==-11:
+                    predictions_test.append(1)
+                    break
+                else:
+                    currentNode = nextNode
+
+
+        for i in self.valid_raw:
+            currentNode = 0
+
+            while(True):
+                attributeToBeTested = self.node[currentNode]
+                attributeValueOfInstance = i[attributeToBeTested]
+                if attributeToBeTested not in self.numerical_attributes:
+                    branchToGo = self.attributeVals[attributeToBeTested].index(attributeValueOfInstance)
+
+                else:
+                    median_val = self.nodeMedianList[currentNode]
+                    if attributeValueOfInstance >= median_val:
+                        branchToGo = 1
+                    else:
+                        branchToGo = 0
+                nextNode = self.children[currentNode][branchToGo]
+
+                if self.node[nextNode]==-10:
+                    predictions_valid.append(0)
+                    break
+                elif self.node[nextNode]==-11:
+                    predictions_valid.append(1)
+                    break
+                else:
+                    currentNode = nextNode
+
+        predictions_test = np.array(predictions_test)
+        predictions_train = np.array(predictions_train)
+        predictions_valid = np.array(predictions_valid)
+
+        labels_test = self.test_raw[:,0]
+        labels_train = self.train_raw[:,0]
+        labels_valid = self.valid_raw[:,0]
 
         correct_test = labels_test[labels_test == predictions_test].size/float(labels_test.size)
         correct_train = labels_train[labels_train == predictions_train].size/float(labels_train.size)
@@ -647,7 +801,7 @@ class DecisionTree:
 
         return
 
-    def grow_tree_threshold(self, mode=0):
+    '''def grow_tree_threshold(self, mode=0):
 
         counter = 0
 
@@ -790,7 +944,174 @@ class DecisionTree:
         print 'Size of Tree', len(self.node)
         print 'Internal Nodes', np.sum(np.array(self.node.values()) > 0)
 
+        return'''
+
+    def grow_tree_threshold(self, mode = 0):
+
+        self.node = {}
+        self.children = {}
+        self.branch = {}
+        self.parent = {}
+        self.majorityLabel = {}
+
+        self.tree_accuracy = []
+
+        counter = 0
+
+        self.node[counter] = 0
+        self.children[counter] = 0
+        self.parent[counter] = -1
+
+        stackOfNodes = Queue.Queue()
+        relevantDataForNodes = Queue.Queue()
+        relevantAttributes = Queue.Queue()
+        stackOfNodes._put(0)
+        relevantDataForNodes._put(self.train_raw)
+        relevantAttributes._put(self.attributes)
+        numOfNodes = 0
+
+        while not stackOfNodes.empty():
+
+            currentNode = stackOfNodes._get()
+            currentData = relevantDataForNodes._get()
+            currentAttributes = relevantAttributes._get()
+
+            #print currentNode
+
+
+            if currentData.size == 0:
+                pass
+
+            elif np.sum(currentData[:, 0] == 0) == currentData[:, 0].size:
+                self.node[currentNode] = -10
+
+            elif np.sum(currentData[:, 0] == 1) == currentData[:, 0].size:
+                self.node[currentNode] = -11
+
+            elif len(currentAttributes) == 0:
+                neg = np.sum([currentData[:, 0] == 0])
+                pos = np.sum([currentData[:, 0] == 1])
+                if neg>pos:
+                    self.node[currentNode] = -10
+                else:
+                    self.node[currentNode] = -11
+
+            else:
+                attribute_index, median_val = self.find_most_informative_feature_continuous(currentData, currentAttributes)
+                if attribute_index == -1:
+                    neg = np.sum(currentData[:, 0] == 0)
+                    pos = np.sum(currentData[:, 0] == 1)
+                    if neg > pos:
+                        self.node[currentNode] = -10
+                    else:
+                        self.node[currentNode] = -11
+                    continue
+
+                self.node[currentNode] = attribute_index
+                self.children[currentNode] = range(len(self.node), len(self.node) + len(self.attributeVals[attribute_index]), 1)
+
+                relevantAttributesForChild = deepcopy(currentAttributes)
+
+
+                if median_val != -1:
+                    self.nodeMedianList[currentNode] = median_val
+                else:
+                    relevantAttributesForChild.remove(attribute_index)
+
+                for i in xrange(len(self.children[currentNode])):
+                    nodeOfChild = self.children[currentNode][i]
+                    if median_val!= -1:
+                        if i == 0:
+                            dataOfChild = currentData[currentData[:, attribute_index] < median_val]
+                        else:
+                            dataOfChild = currentData[currentData[:, attribute_index] >= median_val]
+                    else:
+                        dataOfChild = currentData[currentData[:, attribute_index] == self.attributeVals[attribute_index][i]]
+
+
+                    if dataOfChild.size == 0:
+                        root_neg = np.sum([currentData[:, 0] == 0])
+                        root_pos = np.sum([currentData[:, 0] == 1])
+                        if root_neg > root_pos:
+                            self.node[nodeOfChild] = -10
+                            self.majorityLabel[nodeOfChild] = -10
+                        else:
+                            self.node[nodeOfChild] = -11
+                            self.majorityLabel[nodeOfChild] = -11
+                    else:
+                        neg = dataOfChild[:, 0][dataOfChild[:, 0] == 0].size
+                        pos = dataOfChild[:, 0][dataOfChild[:, 0] == 1].size
+                        if neg>pos:
+                            self.node[nodeOfChild] = -10
+                            self.majorityLabel[nodeOfChild] = -10
+                        else:
+                            self.node[nodeOfChild] = -11
+                            self.majorityLabel[nodeOfChild] = -11
+                    stackOfNodes._put(nodeOfChild)
+                    relevantDataForNodes._put(dataOfChild)
+                    relevantAttributes._put(relevantAttributesForChild)
+
+
+            trainAccuracy, validAccuracy, testAccuracy = self.predict_label_continuous()
+            self.tree_accuracy.append([numOfNodes, trainAccuracy, validAccuracy, testAccuracy])
+            numOfNodes += 1
+
+        self.tree_accuracy = np.array(self.tree_accuracy)
+
+        valid_line = self.tree_accuracy[:, 2]
+        x_index = self.tree_accuracy[:, 0]
+        train_line = self.tree_accuracy[:, 1]
+
+        test_line = self.tree_accuracy[:, 3]
+
+        '''if mode == 1:
+
+            plt.plot(x_index, 100*train_line, x_index, 100*test_line, x_index, 100*valid_line)
+            plt.xlabel('Number of nodes in the Decision Tree.')
+            plt.ylabel('Accuracy (Percentage)')
+            plt.show()'''
+
+        if mode == 1:
+
+            fig = plt.figure()
+            ax = plt.subplot(111)
+
+            training_plot, = ax.plot(x_index, 100*train_line, 'b')
+            testing_plot, = ax.plot(x_index, 100*test_line, 'r')
+            validation_plot, = ax.plot(x_index, 100*valid_line, 'g')
+
+            plt.title('Decision Trees: Performance vs. Size')
+            plt.xlabel('Size of Decision Tree (Nodes)')
+            plt.ylabel('Accuracy (Percentage)')
+
+            box = ax.get_position()
+            ax.set_position([box.x0, box.y0 + box.height * 0.1, box.width, box.height * 0.9])
+            #ax.set_position([box.x0, box.y0, box.width * 0.9, box.height])
+            ax.legend([training_plot, validation_plot, testing_plot], ['Training', 'Validation', 'Testing'], loc='upper center', bbox_to_anchor=(0.5, -0.1), fancybox=True, ncol=3)
+            #ax.legend([training_plot, validation_plot, testing_plot], ['Training', 'Validation', 'Testing'], loc='center left', bbox_to_anchor=(1.0, 0.5))
+
+            plt.show()
+
+
+
+
+
+        finalTrainAccuracy = train_line[-1]
+        finalTestAccuracy = test_line[-1]
+        finalValidAccuracy = valid_line[-1]
+
+
+        print '\nTree Stats (Median Splitting)\n===================================='
+        print 'Training Accuracy', finalTrainAccuracy*100
+        print 'Validation Accuracy', finalValidAccuracy*100
+        print 'Testing Accuracy', finalTestAccuracy*100
+        print 'Size of Tree', len(self.node)
+        print 'Internal Nodes', np.sum(np.array(self.node.values()) > 0)
+
         return
+
+
+
 
 
 
@@ -799,6 +1120,6 @@ class DecisionTree:
 
 DT = DecisionTree()
 #DT.classBalance()
-#DT.grow_tree(mode=1)
-#DT.post_prune(mode=1)
-DT.grow_tree_threshold(mode=1)
+DT.grow_tree(mode=0)
+DT.post_prune(mode=0)
+DT.grow_tree_threshold(mode=0)

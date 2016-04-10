@@ -37,19 +37,13 @@
       <file leaf-file-name="DecTree.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/DecTree.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6969697">
-              <caret line="800" column="18" selection-start-line="800" selection-start-column="18" selection-end-line="800" selection-end-column="18" />
+            <state vertical-scroll-proportion="31.424242">
+              <caret line="1121" column="18" selection-start-line="1121" selection-start-column="18" selection-end-line="1121" selection-end-column="18" />
               <folding>
                 <element signature="e#29#51#0" expanded="true" />
-                <element signature="e#217#2813#0" expanded="false" />
                 <element signature="e#2860#3337#0" expanded="false" />
                 <element signature="e#3375#3740#0" expanded="false" />
                 <element signature="e#3814#5099#0" expanded="false" />
-                <element signature="e#7724#10572#0" expanded="false" />
-                <element signature="e#10623#14775#0" expanded="false" />
-                <element signature="e#14821#20585#0" expanded="false" />
-                <element signature="e#20632#21228#0" expanded="false" />
-                <element signature="e#21275#24855#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -363,15 +357,9 @@
           <caret line="777" column="31" selection-start-line="777" selection-start-column="31" selection-end-line="777" selection-end-column="31" />
           <folding>
             <element signature="e#29#51#0" expanded="true" />
-            <element signature="e#217#2813#0" expanded="false" />
             <element signature="e#2860#3337#0" expanded="false" />
             <element signature="e#3375#3740#0" expanded="false" />
             <element signature="e#3814#5099#0" expanded="false" />
-            <element signature="e#7724#10572#0" expanded="false" />
-            <element signature="e#10623#14775#0" expanded="false" />
-            <element signature="e#14821#20585#0" expanded="false" />
-            <element signature="e#20632#21228#0" expanded="false" />
-            <element signature="e#21275#24855#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -451,15 +439,9 @@
           <caret line="777" column="31" selection-start-line="777" selection-start-column="31" selection-end-line="777" selection-end-column="31" />
           <folding>
             <element signature="e#29#51#0" expanded="true" />
-            <element signature="e#217#2813#0" expanded="false" />
             <element signature="e#2860#3337#0" expanded="false" />
             <element signature="e#3375#3740#0" expanded="false" />
             <element signature="e#3814#5099#0" expanded="false" />
-            <element signature="e#7724#10572#0" expanded="false" />
-            <element signature="e#10623#14775#0" expanded="false" />
-            <element signature="e#14821#20585#0" expanded="false" />
-            <element signature="e#20632#21228#0" expanded="false" />
-            <element signature="e#21275#24855#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -539,15 +521,9 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#29#51#0" expanded="true" />
-            <element signature="e#217#2813#0" expanded="false" />
             <element signature="e#2860#3337#0" expanded="false" />
             <element signature="e#3375#3740#0" expanded="false" />
             <element signature="e#3814#5099#0" expanded="false" />
-            <element signature="e#7724#10572#0" expanded="false" />
-            <element signature="e#10623#14775#0" expanded="false" />
-            <element signature="e#14821#20585#0" expanded="false" />
-            <element signature="e#20632#21228#0" expanded="false" />
-            <element signature="e#21275#24855#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -797,19 +773,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/DecTree.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6969697">
-          <caret line="800" column="18" selection-start-line="800" selection-start-column="18" selection-end-line="800" selection-end-column="18" />
+        <state vertical-scroll-proportion="31.424242">
+          <caret line="1121" column="18" selection-start-line="1121" selection-start-column="18" selection-end-line="1121" selection-end-column="18" />
           <folding>
             <element signature="e#29#51#0" expanded="true" />
-            <element signature="e#217#2813#0" expanded="false" />
             <element signature="e#2860#3337#0" expanded="false" />
             <element signature="e#3375#3740#0" expanded="false" />
             <element signature="e#3814#5099#0" expanded="false" />
-            <element signature="e#7724#10572#0" expanded="false" />
-            <element signature="e#10623#14775#0" expanded="false" />
-            <element signature="e#14821#20585#0" expanded="false" />
-            <element signature="e#20632#21228#0" expanded="false" />
-            <element signature="e#21275#24855#0" expanded="false" />
           </folding>
         </state>
       </provider>
